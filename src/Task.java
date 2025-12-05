@@ -4,8 +4,8 @@ public class Task {
     private final int id;
     private final String title;
     private final String description;
-    private final String priority;   // e.g., LOW / MEDIUM / HIGH
-    private String status;           // TODO / DOING / DONE
+    private final String priority;
+    private String status;
     private final String assignedTo;
     private final LocalDateTime createdAt;
 

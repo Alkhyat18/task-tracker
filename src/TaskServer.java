@@ -78,9 +78,11 @@ public class TaskServer {
         }
 
         private String handleCommand(String line) {
-            // For now we only support:
-            // PING   -> PONG
-            // LIST   -> dump all tasks
+
+            if (line == null || line.isBlank()) {
+                return "ERROR|Empty command";
+            }
+
             String[] parts = line.split("\\|");
             String command = parts[0].toUpperCase();
 
@@ -89,7 +91,7 @@ public class TaskServer {
                     return "OK|PONG";
 
                 case "LIST":
-                    List<Task> tasks = taskManager.getAllTasks();
+                    var tasks = taskManager.getAllTasks();
                     if (tasks.isEmpty()) {
                         return "OK|No tasks yet.";
                     }
@@ -98,6 +100,18 @@ public class TaskServer {
                         sb.append(t.toString()).append(" || ");
                     }
                     return sb.toString();
+
+                case "ADD":
+                    if (parts.length < 5) {
+                        return "ERROR|Usage: ADD|title|description|priority|assignedTo";
+                    }
+                    String title = parts[1];
+                    String description = parts[2];
+                    String priority = parts[3];
+                    String assignedTo = parts[4];
+
+                    Task newTask = taskManager.addTask(title, description, priority, assignedTo);
+                    return "OK|Task added with id " + newTask.getId();
 
                 default:
                     return "ERROR|Unknown command: " + command;
