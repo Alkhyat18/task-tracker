@@ -28,6 +28,6 @@ public class TaskManager {
     }
 
     public synchronized List<Task> getAllTasks() {
-        return new ArrayList<>(tasks); // return copy
+        return new ArrayList<>(tasks);
     }
 }

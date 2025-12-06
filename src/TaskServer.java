@@ -79,6 +79,7 @@ public class TaskServer {
 
         private String handleCommand(String line) {
 
+
             if (line == null || line.isBlank()) {
                 return "ERROR|Empty command";
             }
@@ -113,9 +114,43 @@ public class TaskServer {
                     Task newTask = taskManager.addTask(title, description, priority, assignedTo);
                     return "OK|Task added with id " + newTask.getId();
 
+                case "UPDATE":
+                    if (parts.length < 3) {
+                        return "ERROR|Usage: UPDATE|id|newStatus";
+                    }
+                    try {
+                        int id = Integer.parseInt(parts[1]);
+                        String newStatus = parts[2];
+                        boolean updated = taskManager.updateTaskStatus(id, newStatus);
+                        if (updated) {
+                            return "OK|Task " + id + " status updated to " + newStatus;
+                        } else {
+                            return "ERROR|Task with id " + id + " not found";
+                        }
+                    } catch (NumberFormatException e) {
+                        return "ERROR|Invalid id";
+                    }
+
+                case "DELETE":
+                    if (parts.length < 2) {
+                        return "ERROR|Usage: DELETE|id";
+                    }
+                    try {
+                        int id = Integer.parseInt(parts[1]);
+                        boolean deleted = taskManager.deleteTask(id);
+                        if (deleted) {
+                            return "OK|Task " + id + " deleted";
+                        } else {
+                            return "ERROR|Task with id " + id + " not found";
+                        }
+                    } catch (NumberFormatException e) {
+                        return "ERROR|Invalid id";
+                    }
+
                 default:
                     return "ERROR|Unknown command: " + command;
             }
         }
+
     }
 }
