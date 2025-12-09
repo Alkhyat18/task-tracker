@@ -10,21 +10,25 @@ public class TaskServer {
 
     public static void main(String[] args) {
         TaskServer server = new TaskServer();
-        server.seedDemoTasks();
+        server.seedDemoTasksIfEmpty();
         server.start();
     }
 
-    private void seedDemoTasks() {
-        taskManager.addTask("Set up project repo",
-                "Initialize Git and basic structure", "HIGH", "team");
-        taskManager.addTask("Design task model",
-                "Define Task and TaskManager classes", "MEDIUM", "team");
 
-        System.out.println("Seeded demo tasks:");
-        for (Task t : taskManager.getAllTasks()) {
-            System.out.println("  " + t);
+    private void seedDemoTasksIfEmpty() {
+        if (taskManager.getAllTasks().isEmpty()) {
+            taskManager.addTask("Set up project repo",
+                    "Initialize Git and basic structure", "HIGH", "team");
+            taskManager.addTask("Design task model",
+                    "Define Task and TaskManager classes", "MEDIUM", "team");
+
+            System.out.println("Seeded demo tasks:");
+            for (Task t : taskManager.getAllTasks()) {
+                System.out.println("  " + t);
+            }
         }
     }
+
 
     public void start() {
         System.out.println("Starting TaskServer on port " + PORT + "...");

@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 public class GuiClientMain extends Application {
 
+    private ServerConnection server;
     private final ObservableList<String> taskItems = FXCollections.observableArrayList();
     private TableView<String> tableView;
 
@@ -24,6 +25,12 @@ public class GuiClientMain extends Application {
 
     @Override
     public void start(Stage stage) {
+        try {
+            server = new ServerConnection("localhost", 5000);
+        } catch (Exception e) {
+            System.out.println("Could not connect to server");
+        }
+
         TextField titleField = new TextField();
         TextField descriptionField = new TextField();
         TextField priorityField = new TextField();
@@ -45,12 +52,24 @@ public class GuiClientMain extends Application {
         Button deleteButton = new Button("Delete");
         Button refreshButton = new Button("Refresh");
 
+        refreshButton.setOnAction(e -> refreshTasks());
+
         addButton.setOnAction(e -> {
             String title = titleField.getText();
-            if (!title.isBlank()) {
-                taskItems.add(title);
-                titleField.clear();
+            String description = descriptionField.getText();
+            String priority = priorityField.getText();
+            String assignedTo = assignedToField.getText();
+
+            if (title.isBlank()) {
+                return;
             }
+
+            addTask(title, description, priority, assignedTo);
+
+            titleField.clear();
+            descriptionField.clear();
+            priorityField.clear();
+            assignedToField.clear();
         });
 
         GridPane form = new GridPane();
@@ -76,6 +95,36 @@ public class GuiClientMain extends Application {
         stage.setTitle("Task Tracker GUI");
         stage.setScene(scene);
         stage.show();
+
+        refreshTasks();
+    }
+
+    private void refreshTasks() {
+        try {
+            String response = server.send("LIST");
+            taskItems.clear();
+            if (response != null && response.startsWith("OK|")) {
+                String body = response.substring(3);
+                String[] values = body.split("\\|\\|");
+                for (String v : values) {
+                    String trimmed = v.trim();
+                    if (!trimmed.isEmpty()) {
+                        taskItems.add(trimmed);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error refreshing tasks");
+        }
+    }
+
+    private void addTask(String title, String description, String priority, String assignedTo) {
+        try {
+            String cmd = "ADD|" + title + "|" + description + "|" + priority + "|" + assignedTo;
+            server.send(cmd);
+            refreshTasks();
+        } catch (Exception e) {
+            System.out.println("Error adding task");
+        }
     }
 }
-
