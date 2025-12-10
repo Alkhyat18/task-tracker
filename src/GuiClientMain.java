@@ -35,11 +35,13 @@ public class GuiClientMain extends Application {
         TextField descriptionField = new TextField();
         TextField priorityField = new TextField();
         TextField assignedToField = new TextField();
+        TextField statusField = new TextField();
 
         titleField.setPromptText("Title");
         descriptionField.setPromptText("Description");
         priorityField.setPromptText("Priority");
         assignedToField.setPromptText("Assigned To");
+        statusField.setPromptText("Status (TODO/DOING/DONE)");
 
         tableView = new TableView<>(taskItems);
         TableColumn<String, String> col = new TableColumn<>("Tasks");
@@ -71,6 +73,36 @@ public class GuiClientMain extends Application {
             priorityField.clear();
             assignedToField.clear();
         });
+        updateButton.setOnAction(e -> {
+            String selected = tableView.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                return;
+            }
+            String newStatus = statusField.getText().trim();
+            if (newStatus.isEmpty()) {
+                return;
+            }
+            int id = extractIdFromRow(selected);
+            if (id == -1) {
+                return;
+            }
+            updateTaskStatus(id, newStatus.toUpperCase());
+            refreshTasks();
+            statusField.clear();
+        });
+
+        deleteButton.setOnAction(e -> {
+            String selected = tableView.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                return;
+            }
+            int id = extractIdFromRow(selected);
+            if (id == -1) {
+                return;
+            }
+            deleteTask(id);
+            refreshTasks();
+        });
 
         GridPane form = new GridPane();
         form.setHgap(10);
@@ -83,6 +115,8 @@ public class GuiClientMain extends Application {
         form.add(priorityField, 1, 2);
         form.add(new Label("Assigned To"), 0, 3);
         form.add(assignedToField, 1, 3);
+        form.add(new Label("Status"), 0, 4);
+        form.add(statusField, 1, 4);
 
         HBox buttons = new HBox(10, addButton, updateButton, deleteButton, refreshButton);
 
@@ -125,6 +159,35 @@ public class GuiClientMain extends Application {
             refreshTasks();
         } catch (Exception e) {
             System.out.println("Error adding task");
+        }
+    }
+    private void updateTaskStatus(int id, String newStatus) {
+        try {
+            String cmd = "UPDATE|" + id + "|" + newStatus;
+            server.send(cmd);
+        } catch (Exception e) {
+            System.out.println("Error updating task");
+        }
+    }
+    private void deleteTask(int id) {
+        try {
+            String cmd = "DELETE|" + id;
+            server.send(cmd);
+        } catch (Exception e) {
+            System.out.println("Error deleting task");
+        }
+    }
+    private int extractIdFromRow(String row) {
+        try {
+            int open = row.indexOf('[');
+            int close = row.indexOf(']');
+            if (open == -1 || close == -1 || close <= open + 1) {
+                return -1;
+            }
+            String idStr = row.substring(open + 1, close).trim();
+            return Integer.parseInt(idStr);
+        } catch (Exception e) {
+            return -1;
         }
     }
 }
