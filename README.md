@@ -115,7 +115,7 @@ To run across 2 machines on the same network:
 | **Time Management**                    |      3       |       3       | 3 | 3 |
 | **Overall Contribution (Total Score)** |    **18**    |    **18**     | **18** | **18** |
 
-## Team Evaluation Mohammed Alkhayat
+## Team Evaluation Mohammed Alkhyat
 
 | Category                               | Mohammed Alkhayat | Jalal Mogalli | Zayn Siblani | Mohamad Zahr |
 |----------------------------------------|:------------:|:-------------:|:------------:|:------------:|
