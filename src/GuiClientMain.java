@@ -73,6 +73,7 @@ public class GuiClientMain extends Application {
             priorityField.clear();
             assignedToField.clear();
         });
+
         updateButton.setOnAction(e -> {
             String selected = tableView.getSelectionModel().getSelectedItem();
             if (selected == null) {
@@ -161,6 +162,7 @@ public class GuiClientMain extends Application {
             System.out.println("Error adding task");
         }
     }
+
     private void updateTaskStatus(int id, String newStatus) {
         try {
             String cmd = "UPDATE|" + id + "|" + newStatus;
@@ -169,6 +171,7 @@ public class GuiClientMain extends Application {
             System.out.println("Error updating task");
         }
     }
+
     private void deleteTask(int id) {
         try {
             String cmd = "DELETE|" + id;
@@ -177,6 +180,7 @@ public class GuiClientMain extends Application {
             System.out.println("Error deleting task");
         }
     }
+
     private int extractIdFromRow(String row) {
         try {
             int open = row.indexOf('[');

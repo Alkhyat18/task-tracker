@@ -1,4 +1,8 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -33,24 +37,19 @@ public class TaskClient {
                     case "1":
                         addTask(scanner, out, in);
                         break;
-
                     case "2":
                         listTasks(out, in);
                         break;
-
                     case "3":
                         updateTask(scanner, out, in);
                         break;
-
                     case "4":
                         deleteTask(scanner, out, in);
                         break;
-
                     case "0":
                         running = false;
                         System.out.println("Goodbye!");
                         break;
-
                     default:
                         System.out.println("Invalid option.");
                 }
