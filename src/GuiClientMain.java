@@ -26,7 +26,7 @@ public class GuiClientMain extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            server = new ServerConnection("localhost", 5000);
+            server = new ServerConnection("localhost", 5050);
         } catch (Exception e) {
             System.out.println("Could not connect to server");
         }
@@ -105,6 +105,13 @@ public class GuiClientMain extends Application {
             refreshTasks();
         });
 
+        if (server == null) {
+            addButton.setDisable(true);
+            updateButton.setDisable(true);
+            deleteButton.setDisable(true);
+            refreshButton.setDisable(true);
+        }
+
         GridPane form = new GridPane();
         form.setHgap(10);
         form.setVgap(10);
@@ -135,6 +142,10 @@ public class GuiClientMain extends Application {
     }
 
     private void refreshTasks() {
+        if (server == null) {
+            System.out.println("No server connection available");
+            return;
+        }
         try {
             String response = server.send("LIST");
             taskItems.clear();
@@ -154,6 +165,10 @@ public class GuiClientMain extends Application {
     }
 
     private void addTask(String title, String description, String priority, String assignedTo) {
+        if (server == null) {
+            System.out.println("No server connection available");
+            return;
+        }
         try {
             String cmd = "ADD|" + title + "|" + description + "|" + priority + "|" + assignedTo;
             server.send(cmd);
@@ -164,6 +179,10 @@ public class GuiClientMain extends Application {
     }
 
     private void updateTaskStatus(int id, String newStatus) {
+        if (server == null) {
+            System.out.println("No server connection available");
+            return;
+        }
         try {
             String cmd = "UPDATE|" + id + "|" + newStatus;
             server.send(cmd);
@@ -173,6 +192,10 @@ public class GuiClientMain extends Application {
     }
 
     private void deleteTask(int id) {
+        if (server == null) {
+            System.out.println("No server connection available");
+            return;
+        }
         try {
             String cmd = "DELETE|" + id;
             server.send(cmd);

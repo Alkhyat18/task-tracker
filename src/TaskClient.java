@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class TaskClient {
 
     private static final String HOST = "localhost";
-    private static final int PORT = 5000;
+    private static final int PORT = 5050;
 
     public static void main(String[] args) {
         new TaskClient().start();

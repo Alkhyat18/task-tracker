@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TaskServer {
 
-    private static final int PORT = 5000;
+    private static final int PORT = 5050;
     private final TaskManager taskManager = new TaskManager();
 
     public static void main(String[] args) {
